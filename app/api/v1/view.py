@@ -7,7 +7,8 @@ class UserDetails(Resource, RaiseRedFlagModel):
         self.details = RaiseRedFlagModel()
 
     def post(self):
-        data = request.get_json()
+        data = request.get_json()["data"]
+
         orgName = data['organization name']
         pName = data["person's name"]
         corruption_type = data['corruption type']
@@ -22,4 +23,5 @@ class UserDetails(Resource, RaiseRedFlagModel):
         return resp, 201
 
     def get(self):
-        return self.details, 200
+        return self.details.get_redFlag(), 200
+

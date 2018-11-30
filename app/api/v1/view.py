@@ -12,7 +12,7 @@ class UserReportRedFlagList(Resource):
         It checks for the most important fields which 
         should not be left blank and returns "Record Added Successful"
         """
-        data = request.get_json()
+        data = request.get_json()['name']
 
         createdOn = data['createdOn']
         createdBy = data["createdBy"]
@@ -31,8 +31,14 @@ class UserReportRedFlagList(Resource):
         # resp = 
         self.details.save(id, createdOn, createdBy, ci_type, location, status, photo, video, comments)
         return{
-            "id": id,
             "message": "Record saved successful"
         }, 201
         # return resp, 201
         # return jsonify({"message": "Record added successfull"},201)
+
+    """The method gets all the records"""
+    def get(self):
+        return self.details.get_redFlag(), 200
+        # return{
+        #     "message": "Successfully viewed"
+        # }, 200

@@ -42,3 +42,11 @@ class UserReportRedFlagList(Resource):
         # return{
         #     "message": "Successfully viewed"
         # }, 200
+
+"""The class posts and gets a specific record"""
+class UserReportRedFlag(Resource, RaiseRedFlagModel):
+    def __init__(self):
+        self.details = RaiseRedFlagModel()
+
+    def get(self, id):
+        return self.details.find(id), 200

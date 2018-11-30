@@ -48,5 +48,19 @@ class UserReportRedFlag(Resource, RaiseRedFlagModel):
     def __init__(self):
         self.details = RaiseRedFlagModel()
 
+    """Get specific record"""
     def get(self, id):
         return self.details.find(id), 200
+
+    """Edit specific record"""
+    def patch(self, id):
+        data = request.get_json()
+        record_id = self.details.find(id)
+
+        if not record_id:
+            return jsonify({"message": "record not found"},200)
+        record_update = record_id.update(data), 200
+        return jsonify({
+            "message": "record updated",
+            "data": record_update[id]
+        })

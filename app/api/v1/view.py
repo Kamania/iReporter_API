@@ -64,3 +64,12 @@ class UserReportRedFlag(Resource, RaiseRedFlagModel):
             "message": "record updated",
             "data": record_update[id]
         })
+
+    """Deletes a specific record"""
+    def delete(self, id):
+        record_id = self.details.find(id)
+        del_record = self.details.get_redFlag()
+
+        if record_id != 0:
+            return del_record.pop(record_id), 200
+        return jsonify({"message": "record not found","status": "404"}),404

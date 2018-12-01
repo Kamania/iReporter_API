@@ -40,5 +40,8 @@ def test_one_get_record(self):
     self.assertEqual(resp.status_code, 200)
 
 def test_patch_specific_record(self):
-        resp = self.client.patch('/api/v1/red_flag_record/1')
-        self.assertEqual(resp.status_code, 200)
+    resp = self.client.patch('/api/v1/red_flag_record/1')
+    self.assertEqual(resp.status_code, 200)
+def test_delete_specific_record(self):
+    resp = self.client.delete('/api/v1/red_flag_record/1')
+    self.assertEqual(resp.status_code, 200)

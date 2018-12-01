@@ -12,7 +12,7 @@ class UserReportRedFlagList(Resource):
         It checks for the most important fields which 
         should not be left blank and returns "Record Added Successful"
         """
-        data = request.get_json()['name']
+        data = request.get_json()["data"]
 
         createdOn = data['createdOn']
         createdBy = data["createdBy"]

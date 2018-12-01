@@ -3,7 +3,10 @@ python:
  - "3.6"
 
 install:
-  - pip install -r requirements.txt
+  - pip install pytest-cov
+  - pip install coveralls
+  - pip install flask
+  - pip install flask_restful
 
 script:
  - py.test

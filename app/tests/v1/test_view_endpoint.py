@@ -30,11 +30,15 @@ def test_post_all_records(self):
     self.assertEqual(resp.status_code, 201)
 
 def test_get_all_records(self):
-        resp = self.client.get('/api/v1/red_flag_records')
-        # result = json.loads(resp.data.decode())        
-        # self.assertEqual(result["message"], "Successfully viewed", msg = "No records to view")
-        self.assertEqual(resp.status_code, 200)
+    resp = self.client.get('/api/v1/red_flag_records')
+    # result = json.loads(resp.data.decode())        
+    # self.assertEqual(result["message"], "Successfully viewed", msg = "No records to view")
+    self.assertEqual(resp.status_code, 200)
 
 def test_one_get_record(self):
-        resp = self.client.get('/api/v1/red_flag_record/2')
+    resp = self.client.get('/api/v1/red_flag_record/2')
+    self.assertEqual(resp.status_code, 200)
+
+def test_patch_specific_record(self):
+        resp = self.client.patch('/api/v1/red_flag_record/1')
         self.assertEqual(resp.status_code, 200)

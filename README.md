@@ -2,4 +2,4 @@
 
 ## Web App to report corruption
 
-[iReporter](https://kamania.github.io/iReporter/)
+[iReporter](https://kamania.github.io/iReporter/UI)

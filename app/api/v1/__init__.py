@@ -1,4 +1,4 @@
-from app.api.v1.view import UserReportRedFlag, UserReportRedFlagList
+from app.api.v1.view import UserReportRedFlagList, UserReportRedFlag
 from flask_restful import Api, Resource
 from flask import Blueprint
 

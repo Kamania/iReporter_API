@@ -34,3 +34,7 @@ def test_get_all_records(self):
         # result = json.loads(resp.data.decode())        
         # self.assertEqual(result["message"], "Successfully viewed", msg = "No records to view")
         self.assertEqual(resp.status_code, 200)
+
+def test_one_get_record(self):
+        resp = self.client.get('/api/v1/red_flag_record/2')
+        self.assertEqual(resp.status_code, 200)

@@ -1,24 +1,25 @@
 language: python
-
 python:
   - "3.6"
 
 install:
- - pip install -r requirements.txt 
- - pip install coveralls codecov
- - pip install codeclimate-test-reporterpip install codeclimate-test-reporter
+  - pip install pytest-cov
+  - pip install coveralls
+  - pip install flask
+  - pip install flask_restplus
+
+
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
-
 script:
- - pytest --cov-report=term-missing --cov=app
+  - pytest
+  - coverage run --source=app -m pytest && coverage report
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 after_success:
- - coveralls 
- - codecov --token=Pgz0VnDxw_OCNYfPp3zKjg
+  - coveralls

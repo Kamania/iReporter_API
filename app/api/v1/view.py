@@ -12,7 +12,7 @@ class UserReportRedFlagList(Resource):
         It checks for the most important fields which 
         should not be left blank and returns "Record Added Successful"
         """
-        data = request.get_json()["data"]
+        data = request.get_json()
 
         createdOn = data['createdOn']
         createdBy = data["createdBy"]
@@ -67,9 +67,13 @@ class UserReportRedFlag(Resource, RaiseRedFlagModel):
 
     """Deletes a specific record"""
     def delete(self, id):
-        record_id = self.details.find(id)
-        del_record = self.details.get_redFlag()
+        # record = self.details.find(id)
+        # del_record = self.details.get_redFlag()
+        record = self.details.find(id)
 
-        if record_id != 0:
-            return del_record.pop(record_id), 200
-        return jsonify({"message": "record not found","status": "404"}),404
+        if not record:
+            return {"message": "record not found","status": "404"}, 404 
+        
+        self.details.get_redFlag().remove(record)
+
+        return {'message': 'successfully deleted record'}, 200 

@@ -22,17 +22,12 @@ class TestRecord(unittest.TestCase):
     def test_post_all_records(self):
         resp = self.client.post('/api/v1/red_flag_records', 
                                 data=self.records, 
-                                # headers={"content-type": "application/json"}
                                 content_type='application/json'
                                 )
-        result = json.loads(resp.data.decode())        
-        self.assertEqual(result["message"], "Record saved successful", msg = "Record not successful saved")
         self.assertEqual(resp.status_code, 201)
 
     def test_get_all_records(self):
         resp = self.client.get('/api/v1/red_flag_records')
-        # result = json.loads(resp.data.decode())        
-        # self.assertEqual(result["message"], "Successfully viewed", msg = "No records to view")
         self.assertEqual(resp.status_code, 200)
 
     def test_one_get_record(self):

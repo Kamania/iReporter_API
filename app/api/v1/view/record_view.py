@@ -25,16 +25,16 @@ class UserReportRedFlagList(Resource):
         comments = data['comments']
 
         if not createdOn:
-            return jsonify({"message": "Date cannot be left blank"}),
+            return{"message": "Date cannot be left blank"}
         elif not location:
-            return jsonify({"message": "Location cannot be left blank"}),
+            return{"message": "Location cannot be left blank"}
         
         self.details.save(id, createdOn, createdBy, ci_type, location, status, photo, video, comments)
         return{
-            "status": 201,          
-            "data":{
-                "id": len(self.details.get_redFlag()),
-                "message": "Created record successfully"
+            'status': 201,          
+            'data':{
+                'id': len(self.details.get_redFlag()),
+                'message': 'Created record successfully'
             }                  
         }, 201
 
@@ -42,8 +42,8 @@ class UserReportRedFlagList(Resource):
     def get(self):
         get_all = self.details.get_redFlag()
         return{
-            "status": 200,
-            "data": get_all
+            'status': 200,
+            'data': get_all
         }, 200
 
 """The class posts and gets a specific record"""
@@ -55,8 +55,8 @@ class UserReportRedFlag(Resource, RaiseRedFlagModel):
     def get(self, id):
         get_specific = self.details.find(id)
         return{
-            "status":200,
-            "data": get_specific
+            'status':200,
+            'data': get_specific
         },200
 
     """Edit specific record"""
@@ -64,27 +64,26 @@ class UserReportRedFlag(Resource, RaiseRedFlagModel):
         data = request.get_json()
         record_id = self.details.find(id)
 
-        if not record_id:
-            return jsonify({"message": "record not found"},200)
-        record_update = record_id.update(data)
-        return jsonify({
-            "id": record_update[id],
-            "message": "record updated"            
-        }),200
+        
+        record_id.update(data)
+        return{
+            'id': int(id),
+            'message': 'record updated'            
+        }, 200
 
     """Deletes a specific record"""
     def delete(self, id):
         record = self.details.find(id)
 
         if not record:
-            return {"status": 404, "message": "record not found"}, 404 
+            return {'status': 404, 'message': 'record not found'}, 404 
         
         self.details.get_redFlag().remove(record)
 
         return {
-                "status": 200,
-                "data": [{
-                    "id": len(self.details.get_redFlag())+1,
+                'status': 200,
+                'data': [{
+                    'id': len(self.details.get_redFlag())+1,
                     'message': 'successfully deleted record'
                 }]
-        }, 200 
+        }, 200

@@ -5,14 +5,21 @@
 # iReporter API Endpoints
 
 ```
-iReporter is a web app that provides users a platform where they can report corruption cases or ask for an intervention.
+iReporter is a web app that provides users a platform where they can report corruption cases
+ or ask for an intervention.
 ```
 
 ## Tech/ Framework used
 
-```Python 3```
-```Flask```
-```Flask Restful```
+```
+Python 3
+```
+```
+Flask
+```
+```
+Flask Restful
+```
 
 ## Features or end points
 
@@ -26,7 +33,10 @@ GET all record endpoint
 GET specific endpoint
 ```
 ```
-PATCH specific endpoint
+PATCH specific location endpoint
+```
+```
+PATCH specific comment endpoint
 ```
 ```
 DELETE specific endpoint
@@ -48,11 +58,12 @@ The tests so far are as below:
 ```
 | Method | Route | Endpoint Functionality |
 | :---         |     :---       |          :--- |
-| GET     | /api/v1//red_flag_records        | View All records     |
-| POST     | /api/v1//red_flag_records        | Add a Record      |
-| GET     | /api/v1/red_flag_record/id       | Retrieve a single record by id     |
-| PATCH     | /api/v1/red_flag_record/id     | Edit a record by ID    |
-| DELETE     | /api/v1/red_flag_record/id     | delete a record by ID    |
+| GET     | /api/v1/records        | View All records     |
+| POST     | /api/v1/records        | Add a Record      |
+| GET     | /api/v1/records/id       | Retrieve a single record by id     |
+| PATCH     | /api/v1/records/id/location'     | Edit a location by ID    |
+| PATCH     | /api/v1/records/id/comment'     | Edit a comment by ID    |
+| DELETE     | /api/v1/records/id     | delete a record by ID    |
 
 ## Installation procedure
 

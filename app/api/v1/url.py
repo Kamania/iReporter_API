@@ -1,10 +1,14 @@
-from . import Register,UserReportRedFlag,UserReportRedFlagList,version_one
+from . import Register, UserReportRedFlag, UserReportRedFlagList, version_one
 from flask_restful import Api, Resource
+from .views import Patch_location, Patch_comment
+
 
 def routes(api):
     """Add api endpoints"""
-    api.add_resource(UserReportRedFlagList, '/red_flag_records')
-    api.add_resource(UserReportRedFlag, '/red_flag_record/<int:id>')
+    api.add_resource(UserReportRedFlagList, '/records')
+    api.add_resource(UserReportRedFlag, '/records/<id>')
+    api.add_resource(Patch_location, '/records/<id>/location')
+    api.add_resource(Patch_comment, '/records/<id>/comment')
     api.add_resource(Register, '/user')
 
     return None

@@ -4,13 +4,15 @@ redFlag = []
 
 class UserModel:
     """Saves the user"""
+    counter = 1
+
     def __init__(self):
         self.db = users
 
     def save(self, id, firstname, lastname, othernames, email, phoneNumber,
              username, registeredOn, isAdmin, password, password_confirmation):
         payload = {
-            'id': len(users)+1,
+            'id': UserModel.counter,
             'firstname': firstname,
             'lastname': lastname,
             'othernames': othernames,
@@ -22,6 +24,7 @@ class UserModel:
             'password': password,
             'password_confirmation': password_confirmation
         }
+        UserModel.counter += 1
 
         self.db.append(payload)
         return self.db
@@ -31,13 +34,15 @@ class UserModel:
 
 
 class RaiseRedFlagModel(object):
+    counter = 1
+
     def __init__(self):
         self.db = redFlag
 
     def save(self, id, createdOn, createdBy, ci_type, location, status, photo,
              video, comments):
         data = {
-            "id": len(redFlag)+1,
+            "id": RaiseRedFlagModel.counter,
             "createdOn": createdOn,
             "createdBy": createdBy,
             "type": ci_type,
@@ -47,6 +52,8 @@ class RaiseRedFlagModel(object):
             "video": video,
             "comments": comments
         }
+
+        RaiseRedFlagModel.counter += 1
 
         self.db.append(data)
 

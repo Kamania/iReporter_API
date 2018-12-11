@@ -75,18 +75,5 @@ class TestRecord(unittest.TestCase):
         resp = self.client.delete('/api/v1/records/1', json=self.records)
         self.assertEqual(resp.status_code, 200)
 
-    ''' Tests for users'''
-    
-    def test_user_post(self):
-        resp = self.client.post('/api/v1/user',
-                                json=self.user)
-        self.assertEqual(resp.status_code, 201)
-
-    def test_get_all_users(self):
-        self.client.post('/api/v1/records',
-                         json=self.records)
-        resp = self.client.get('/api/v1/records')
-        self.assertEqual(resp.status_code, 200)
-
 if __name__ == '__main__':
     unittest.main()

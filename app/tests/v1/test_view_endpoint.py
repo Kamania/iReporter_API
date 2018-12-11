@@ -75,7 +75,7 @@ class TestRecord(unittest.TestCase):
         resp = self.client.delete('/api/v1/records/1', json=self.records)
         self.assertEqual(resp.status_code, 200)
 
-<<<<<<< HEAD
+
     ''' Tests for users'''
 
     def test_user_post(self):
@@ -93,8 +93,6 @@ class TestRecord(unittest.TestCase):
         resp = self.client.post('/api/v1/user',
                                 json=self.user)
         resp = self.client.get('/api/v1/user/1')
-        self.assertEqual(resp.status_code, 200)
-
         self.assertEqual(resp.status_code, 200)
 
 if __name__ == '__main__':

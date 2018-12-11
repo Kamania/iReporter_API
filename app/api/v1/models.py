@@ -32,6 +32,18 @@ class UserModel:
     def get_user_data(self):
         return self.db
 
+    def find(self, id):
+        for record in self.db:
+            if str(record['id']) == str(id):
+                return record
+        return None
+
+    def find_by_username(self, username):
+        for user in self.db:
+            if user.username == username:
+                return user
+        return None
+
 
 class RaiseRedFlagModel(object):
     counter = 1

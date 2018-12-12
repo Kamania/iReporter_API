@@ -79,4 +79,4 @@ class RaiseRedFlagModel(object):
         for record in self.db:
             if str(record['id']) == str(id):
                 return record
-            None
+        return None

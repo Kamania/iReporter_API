@@ -62,42 +62,75 @@ class UserReportRedFlagList(Resource):
         comments = data['comments']
 
         if re.match(r"([@_!#$%^&*()<>?/\|}{~:])", createdOn):
-            return {'message': 'Invalid date'}
+            return {
+                'status': 400,
+                'message': 'Invalid date'
+                }, 400
 
         elif not createdOn or len(createdOn.split()) == 0:
-            return {'message': 'Date cannot be left blank'}
+            return {
+                'status': 400,
+                'message': 'Date cannot be left blank'
+                }, 400
 
         elif re.match(r"([@_!#$%^&*()<>?/\|}{~:])", createdBy):
-            return {'message': 'Invalid name'}
+            return {
+                'status': 400,
+                'message': 'Name cannot contain special characters'
+                }, 400
 
         elif not createdBy or len(createdBy.split()) == 0:
-            return {'message': 'Reporter cannot be left blank'}
-
-        elif not ci_type or len(ci_type.split()) == 0:
-            return {'message': 'Record type cannot be left blank'}
-
-        elif re.match(r"([@_!#$%^&*()<>?/\|}{~:])", location):
-            return {'message': 'Invalid location'}
+            return {
+                'status': 400,
+                'message': 'CreatedBy cannot be left blank'
+                }, 400
 
         elif not location or len(location.split()) == 0:
-            return {'message': 'Location cannot be left blank'}
+            return {
+                'status': 400,
+                'message': 'Location cannot be left blank'
+                }, 400
+
+        elif not ci_type or len(ci_type.split()) == 0:
+            return {
+                'status': 400,
+                'message': 'Record type cannot be left blank'
+                }, 400
+
+        elif not re.match(r"^([-+]?\d{1,2}([.]\d+)?),\s*([-+]?\d{1,3}([.]\d+)?)$", location):
+            return {
+                'status': 400,
+                'message': 'Please ensure to seperate lat and long with a\
+                 comma, lat and long are numbers, lat and long are within\
+                 their appropriate range.'
+                }, 400
 
         elif not status or len(status.split()) == 0:
-            return {'message': 'Status cannot be left blank'}
+            return {
+                'status': 400,
+                'message': 'Status cannot be left blank'
+                }, 400
 
         elif re.match(r"([@_!#$%^&*()<>?/\|}{~:])", comments):
-            return {'message': 'Comment cannot contain special characters'}
+            return {
+                'status': 400,
+                'message': 'Comment cannot contain special characters'
+                }, 400
 
         elif not comments or len(comments.split()) == 0:
-            return {'message': 'Comments cannot be left blank'}
+            return {
+                'status': 400,
+                'message': 'Comments cannot be left blank'
+                }, 400
 
         elif self.details.save(id, createdOn, createdBy, ci_type, location,
                                status, photo, video, comments):
             return {
                 'status': 201,
+                'message': 'Record created successful',
                 'data': {
                     'id': self.details.counter - 1,
-                    'message': 'Created record successfully'
+                    'data': data
                 }
             }, 201
         return {
@@ -116,9 +149,9 @@ class UserReportRedFlagList(Resource):
                 'data': get_all
             }, 200
         return {
-            'status': 200,
+            'status': 404,
             'message': 'No record(s) found'
-        }, 200
+        }, 404
 
 
 """The class posts and gets a specific record"""
@@ -139,7 +172,7 @@ class UserReportRedFlag(Resource, RaiseRedFlagModel):
         return {
             'status': 404,
             'message': 'record not found'
-            }, 404
+        }, 404
 
     """Deletes a specific record"""
 
@@ -149,15 +182,13 @@ class UserReportRedFlag(Resource, RaiseRedFlagModel):
             self.details.get_redFlag().remove(record)
             return {
                     'status': 200,
-                    'data': [{
-                        'id': int(id),
-                        'message': 'successfully deleted record'
-                    }]
+                    'id': int(id),
+                    'message': 'successfully deleted record'
             }, 200
 
         return {
             'status': 404,
-            'error': 'record not found'
+            'message': 'record not found'
         }, 404
 
 
@@ -171,13 +202,15 @@ class Patch_location(Resource, RaiseRedFlagModel):
         data = request.get_json()
         record = self.details.find(id)
 
-        if not re.match(r"^([-+]?\d{1,2}([.]\d+)?),\s*([-+]?\d{1,3}([.]\d+)?)$\
-                    ", data['location']):
-            return {'message': 'Please seperate the lat and long with a comma a\
-            nd should be within the range'}
+        if re.match(r"([@_!#$%^&*()<>?/\|}{~:])", data['location']):
+            return {'message': 'location should not contain special characters'}
 
         if not data['location'] or len(data['location'].split()) == 0:
-            return {'message': 'Location cannot be left blank'}
+            return {
+                'status': 400,
+                'message': 'Location cannot be left blank'
+                }, 400
+
         if not record:
             return {
                 'status': 500,
@@ -204,10 +237,13 @@ class Patch_comment(Resource, RaiseRedFlagModel):
         record = self.details.find(id)
 
         if re.match(r"([@_!#$%^&*()<>?/\|}{~:])", data['comments']):
-            return {'message': 'Invalid comments input'}
+            return {'message': 'comment should not contain special characters'}
 
         if not data['comments'] or len(data['comments'].split()) == 0:
-            return {'message': 'comments cannot be left blank'}
+            return {
+                'status': 400,
+                'message': 'comments cannot be left blank'
+                }, 400
         if not record:
             return {
                 'status': 500,

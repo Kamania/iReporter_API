@@ -198,7 +198,6 @@ class Patch_location(Resource, RaiseRedFlagModel):
 
     """Edit specific record"""
     def patch(self, id):
-        args = parser.parse_args()
         data = request.get_json()
         record = self.details.find(id)
 
@@ -232,7 +231,6 @@ class Patch_comment(Resource, RaiseRedFlagModel):
 
     """Edit specific record"""
     def patch(self, id):
-        args = parser.parse_args()
         data = request.get_json()
         record = self.details.find(id)
 

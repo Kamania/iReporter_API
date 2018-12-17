@@ -99,7 +99,9 @@ class UserReportRedFlagList(Resource):
     """The method gets all the records"""
     @jwt_required
     def get(self):
-        get_all = self.details.get_redFlag()
+        current_user = get_jwt_identity().get('user_id')
+        user = current_user
+        get_all = self.details.get_redFlag(user)
         get_all = self.details.check_record(get_all)
 
         if not get_all and len(get_all) == 0:
@@ -123,7 +125,10 @@ class UserReportRedFlag(Resource, RaiseRedFlagModel):
     """Get specific record"""
     @jwt_required
     def get(self, id):
-        get_specific = self.details.find(int(id))
+        current_user = get_jwt_identity().get('user_id')
+        user = current_user
+        get_specific = self.details.find(int(id), user)
+    
         if not get_specific:
             return {
                 'status': 404,
@@ -152,8 +157,9 @@ class UserReportRedFlag(Resource, RaiseRedFlagModel):
         created_by = record['createdby']
         if current_user != created_by:
             return {
+                'status': 403,
                 'error': 'cannot delete other user\'s data'
-            }
+            }, 403
         record = self.details.del_record(id)
         return {
             'status': 200,
@@ -185,15 +191,16 @@ class Patch_location(Resource, RaiseRedFlagModel):
         if not record:
             return {
                 'status': 404,
-                'message': 'record not found'
+                'error': 'record not found'
             }, 404
 
         created_by = record['createdby']
         if current_user != created_by:
             return {
+                'status': 403,
                 'error': 'cannot edit other user\'s data'
-            }
-        self.details.update_location(location, id)        
+            }, 403
+        self.details.update_location(location, id)
         return {
             'status': 200,
             'message': 'Succesfully updated location'
@@ -231,8 +238,9 @@ class Patch_comment(Resource, RaiseRedFlagModel):
         created_by = record['createdby']
         if current_user != created_by:
             return {
+                'status': 403,
                 'error': 'cannot edit other user\'s data'
-            }
+            }, 403
         self.details.update_comment(comment, id)
         return {
             'status': 200,
@@ -252,7 +260,7 @@ class Patch_status(Resource, RaiseRedFlagModel):
         data = parser.parse_args()
         record = self.details.get_record_by_id(id)
         current_user = get_jwt_identity().get('user_id')
-        admin = self.details.check_isAdmin(current_user)
+        admin = self.details.check_isAdmin(str(current_user))
         status = data['status']
         
         if re.match(r"([@_!#$%^&*()<>?/\|}{~:])", data['comments']):
@@ -270,8 +278,9 @@ class Patch_status(Resource, RaiseRedFlagModel):
             }, 500
         if not admin:
             return {
-                'message': 'You are not allowed to update'
-            }
+                'status': 403,
+                'error': 'You are not allowed to update'
+            }, 403
 
         self.details.update_status(status, id)
         return {

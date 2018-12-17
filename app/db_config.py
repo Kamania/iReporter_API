@@ -4,6 +4,7 @@ url = "dbname='ireporter' host='localhost' port='5432' user='postgres'\
      password='root'"
 
 test_url = "dbname='ireporter_test' host='localhost' port='5432' user='postgres' password='root'"
+test_url2 = 'postgresql://localhost/ireporter_test?user=postgres&password=root'
 
 
 def connection(url):
@@ -19,12 +20,12 @@ def init_db():
     
 
 def init_test_db():
-    conn = connection(test_url)
+    conn = connection(test_url2)
     return conn
 
 
-def create_tables():
-    conn = psycopg2.connect(url)
+def create_tables(url_str=url):
+    conn = psycopg2.connect(url_str)
     curr = conn.cursor()
     queries = tables()
 

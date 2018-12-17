@@ -46,34 +46,40 @@ class Register(Resource):
         if not firstname or len(firstname.strip()) == 0:
             return {
                 'status': 401,
-                'message': 'First name can\'t be blank'
+                'error': 'First name can\'t be blank'
                 }, 401
         elif not lastname or len(lastname.strip()) == 0:
             return {
                 'status': 401,
-                'message': 'Last name can\'t be blank'
+                'error': 'Last name can\'t be blank'
                 }, 401
         elif not othernames or len(othernames.strip()) == 0:
             return {
                 'status': 401,
-                'message': 'Other name can\'t be blank'
+                'error': 'Other name can\'t be blank'
                 }, 401
         elif not username:
             return {
                 'status': 401,
-                'message': 'User name can\'t be left blank'
-                }
+                'error': 'User name can\'t be left blank'
+                }, 401
         elif not email:
             return {
                 'status': 401,
-                'message': 'Email can\'t be left blank'
-                }
+                'error': 'Email can\'t be left blank'
+                }, 401
 
         elif not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", email):
-            return {'message': 'invalid email'}
+            return {
+                'status': 401,
+                'error': 'invalid email'
+                }, 401
             
         elif not password:
-            return {'message': 'Password can\'t be left blank'}
+            return {
+                'status': 401,
+                'message': 'Password can\'t be left blank'
+                }, 401
 
         else:
             if user:
@@ -89,7 +95,7 @@ class Register(Resource):
             token = create_access_token(identity=email)
             del data['password']
             return {
-                'status': 201,                
+                'status': 201,
                 'data': {
                     'token': token,
                     'user': data
@@ -108,24 +114,31 @@ class UserLogin(Resource, UserModel):
         self.parser = reqparse.RequestParser()
 
         self.parser.add_argument('username', type=str, required=True,
-                         help='username is missing')
+                                 help='username is missing')
         self.parser.add_argument('password', type=str, required=True,
-                                  help='password is missing')
+                                 help='password is missing')
 
     def post(self):
         data = self.parser.parse_args()
         username = data['username']
         password = data['password']
+        username = username.strip()
+        password = password.strip()
+
+        if not username or not password:
+            return {
+                'status': 400,
+                'error': 'please fill in all the fields'
+            }, 400
         
         user = self.user.get_user(username)
-        
-        passw = user.get('password')
-
         if not user:
             return {
-                'status': 401,
-                'message': 'Invalid username'
-            }, 401
+                'status': 404,
+                'message': 'No user with such username'
+            }, 404
+        
+        passw = user.get('password')        
         
         if not check_password_hash(passw, password):
             return {

@@ -111,3 +111,27 @@ class UserReportRedFlagList(Resource):
             'status': 200,
             'data': get_all
         }, 200
+
+ 
+"""The class posts and gets a specific record"""
+
+
+class UserReportRedFlag(Resource, RaiseRedFlagModel):
+    def __init__(self):
+        self.details = RaiseRedFlagModel()
+
+    """Get specific record"""
+    @jwt_required
+    def get(self, id):
+        get_specific = self.details.find(int(id))
+        if not get_specific:
+            return {
+                'status': 404,
+                'message': 'record not found'
+            }, 404
+        get_specific = self.details.check_record(get_specific)
+        return {
+            'status': 200,
+            'data': get_specific
+        }, 200
+        check_record(record)

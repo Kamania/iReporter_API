@@ -238,3 +238,43 @@ class Patch_comment(Resource, RaiseRedFlagModel):
             'status': 200,
             'message': 'Succesfully updated comments'
         }, 200
+
+
+class Patch_status(Resource, RaiseRedFlagModel):
+
+    """Edit specific record"""
+    def __init__(self):
+        self.details = RaiseRedFlagModel()
+
+    """Edit specific record"""
+    @jwt_required
+    def patch(self, id):
+        data = parser.parse_args()
+        record = self.details.get_record_by_id(id)
+        current_user = get_jwt_identity().get('user_id')
+        admin = self.details.check_isAdmin(current_user)
+        status = data['status']
+        
+        if re.match(r"([@_!#$%^&*()<>?/\|}{~:])", data['comments']):
+            return {'message': 'comment should not contain special characters'}
+
+        if not data['comments'] or len(data['comments'].split()) == 0:
+            return {
+                'status': 400,
+                'message': 'comments cannot be left blank'
+                }, 400
+        if not record:
+            return {
+                'status': 500,
+                'message': 'comments not updated'
+            }, 500
+        if not admin:
+            return {
+                'message': 'You are not allowed to update'
+            }
+
+        self.details.update_status(status, id)
+        return {
+            'status': 200,
+            'message': 'Succesfully updated status'
+        }, 200

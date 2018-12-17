@@ -198,3 +198,43 @@ class Patch_location(Resource, RaiseRedFlagModel):
             'status': 200,
             'message': 'Succesfully updated location'
         }, 200
+
+
+class Patch_comment(Resource, RaiseRedFlagModel):
+
+    """Edit specific record"""
+    def __init__(self):
+        self.details = RaiseRedFlagModel()
+
+    """Edit specific record"""
+    @jwt_required
+    def patch(self, id):
+        data = parser.parse_args()
+        current_user = get_jwt_identity().get('user_id')
+        comment = data['comments']
+        record = self.details.get_record_by_id(id)
+
+        if re.match(r"([@_!#$%^&*()<>?/\|}{~:])", data['comments']):
+            return {'message': 'comment should not contain special characters'}
+
+        if not data['comments'] or len(data['comments'].split()) == 0:
+            return {
+                'status': 400,
+                'message': 'comments cannot be left blank'
+                }, 400
+        if not record:
+            return {
+                'status': 500,
+                'message': 'comments not updated'
+            }, 500
+
+        created_by = record['createdby']
+        if current_user != created_by:
+            return {
+                'error': 'cannot edit other user\'s data'
+            }
+        self.details.update_comment(comment, id)
+        return {
+            'status': 200,
+            'message': 'Succesfully updated comments'
+        }, 200

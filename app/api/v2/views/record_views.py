@@ -158,4 +158,43 @@ class UserReportRedFlag(Resource, RaiseRedFlagModel):
         return {
             'status': 200,
             'message': 'successfully deleted record'
+        }, 200              
+
+
+class Patch_location(Resource, RaiseRedFlagModel):
+    def __init__(self):
+        self.details = RaiseRedFlagModel()
+
+    """Edit specific record"""
+    @jwt_required
+    def patch(self, id):
+        data = parser.parse_args()
+        current_user = get_jwt_identity().get('user_id')
+        location = data['location']
+        record = self.details.get_record_by_id(id)
+
+        if re.match(r"([@_!#$%^&*()<>?/\|}{~:])", data['location']):
+            return {'message': 'location should not contain special characters'}
+
+        if not data['location'] or len(data['location'].split()) == 0:
+            return {
+                'status': 400,
+                'message': 'Location cannot be left blank'
+                }, 400
+
+        if not record:
+            return {
+                'status': 404,
+                'message': 'record not found'
+            }, 404
+
+        created_by = record['createdby']
+        if current_user != created_by:
+            return {
+                'error': 'cannot edit other user\'s data'
+            }
+        self.details.update_location(location, id)        
+        return {
+            'status': 200,
+            'message': 'Succesfully updated location'
         }, 200

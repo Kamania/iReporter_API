@@ -21,10 +21,10 @@ class RaiseRedFlagModel():
         self.curr.execute(query)
         self.conn.commit()
 
-    def get_redFlag(self):
-        query = '''SELECT * FROM incidents'''
+    def get_redFlag(self, user):
+        query = '''SELECT * FROM incidents WHERE createdby=%s'''
         curr = self.curr
-        curr.execute(query)
+        curr.execute(query, (user,))
         records = curr.fetchall()
         if not records:
             return None
@@ -57,10 +57,10 @@ class RaiseRedFlagModel():
             result.append(record)
         return result
 
-    def find(self, id):
-        query = '''SELECT * FROM incidents where incident_id= %s'''
+    def find(self, id, user):
+        query = '''SELECT * FROM incidents where incident_id= %s AND createdby=%s'''
         curr = self.curr
-        curr.execute(query, (id,))
+        curr.execute(query, (id, user,))
         record = curr.fetchall()
         return record
 
@@ -82,10 +82,10 @@ class RaiseRedFlagModel():
         curr.execute(query, (status, id,))
         self.conn.commit()
 
-    def check_isAdmin(self, id):
-        query = """SELECT * FROM users WHERE user_id=%s"""
+    def check_isAdmin(self, current_user):
+        query = """SELECT isadmin FROM users WHERE username=%s"""
         curr = self.curr
-        curr.execute(query, (id,))
+        curr.execute(query, (current_user,))
         user = curr.fetchone()
         return user
         

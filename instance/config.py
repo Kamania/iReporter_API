@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 
 class Config(object):
@@ -6,11 +7,13 @@ class Config(object):
     DEBUG = False
     CSRF_ENABLED = True
     SECRET = os.getenv('SECRET')
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
 
 
 class DevelopmentConfig(Config):
     """Configurations for Development."""
     DEBUG = True
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY') or 'my-secret-key'
 
 
 class TestingConfig(Config):

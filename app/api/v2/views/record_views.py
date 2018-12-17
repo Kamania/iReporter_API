@@ -135,3 +135,27 @@ class UserReportRedFlag(Resource, RaiseRedFlagModel):
             'data': get_specific
         }, 200
         check_record(record)
+
+    
+    """Deletes a specific record"""
+
+    @jwt_required
+    def delete(self, id):        
+        record = self.details.get_record_by_id(id)
+        current_user = get_jwt_identity().get('user_id')
+        if not record:
+            return {
+                'status': 404,
+                'error': 'record not found'
+            }, 404
+        
+        created_by = record['createdby']
+        if current_user != created_by:
+            return {
+                'error': 'cannot delete other user\'s data'
+            }
+        record = self.details.del_record(id)
+        return {
+            'status': 200,
+            'message': 'successfully deleted record'
+        }, 200

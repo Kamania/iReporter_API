@@ -101,3 +101,44 @@ class Register(Resource):
             'error': 'not successfully registered'
         }, 404
 
+
+class UserLogin(Resource, UserModel):
+    def __init__(self):
+        self.user = UserModel()
+        self.parser = reqparse.RequestParser()
+
+        self.parser.add_argument('username', type=str, required=True,
+                         help='username is missing')
+        self.parser.add_argument('password', type=str, required=True,
+                                  help='password is missing')
+
+    def post(self):
+        data = self.parser.parse_args()
+        username = data['username']
+        password = data['password']
+        
+        user = self.user.get_user(username)
+        
+        passw = user.get('password')
+
+        if not user:
+            return {
+                'status': 401,
+                'message': 'Invalid username'
+            }, 401
+        
+        if not check_password_hash(passw, password):
+            return {
+                'status': 401,
+                'message': 'Invalid password'
+            }, 401
+
+        token = create_access_token(identity=user, fresh=True)
+        user['registeredon'] = user['registeredon'].strftime('%A %d. %B %Y')
+        del user['password']
+
+        return {
+            'status': 200,
+            'access token': token,
+            'user': user
+        }, 200

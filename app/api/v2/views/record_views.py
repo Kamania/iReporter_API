@@ -95,3 +95,19 @@ class UserReportRedFlagList(Resource):
                 'data': data
             }]
         }, 201
+
+    """The method gets all the records"""
+    @jwt_required
+    def get(self):
+        get_all = self.details.get_redFlag()
+        get_all = self.details.check_record(get_all)
+
+        if not get_all and len(get_all) == 0:
+            return {
+                'status': 404,
+                'message': 'No record(s) found'
+            }, 404
+        return {
+            'status': 200,
+            'data': get_all
+        }, 200

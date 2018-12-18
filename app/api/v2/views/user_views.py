@@ -32,28 +32,28 @@ class Register(Resource):
     def post(self):
 
         data = self.parser.parse_args()
-        firstname = data['firstname']
-        lastname = data['lastname']
-        othernames = data['othernames']
-        email = data['email']
-        phoneNumber = data['phoneNumber']
-        username = data['username']
+        firstname = data['firstname'].strip()
+        lastname = data['lastname'].strip()
+        othernames = data['othernames'].strip()
+        email = data['email'].strip()
+        phoneNumber = data['phoneNumber'].strip()
+        username = data['username'].strip()
         password = generate_password_hash(data['password'], method='pbkdf2:sha256', salt_length=8)
 
         user = self.user.get_user(username)
         user_email = self.user.get_email(email)
 
-        if not firstname or len(firstname.strip()) == 0:
+        if not firstname:
             return {
                 'status': 401,
                 'error': 'First name can\'t be blank'
                 }, 401
-        elif not lastname or len(lastname.strip()) == 0:
+        elif not lastname:
             return {
                 'status': 401,
                 'error': 'Last name can\'t be blank'
                 }, 401
-        elif not othernames or len(othernames.strip()) == 0:
+        elif not othernames:
             return {
                 'status': 401,
                 'error': 'Other name can\'t be blank'
